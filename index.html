@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Abroad Budget Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+            transition: background 0.5s;
+        }
+        .container {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .options button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .progress {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .result {
+            font-size: 16px;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .final-results, .game-section {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 16px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .final-results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .final-results th, .final-results td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .final-results th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .share-btn, .restart-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .share-btn:hover, .restart-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Study Abroad Role-Playing Game</h2>
+        <p class="progress" id="progress">Question 1 of 10</p>
+        <div id="game">
+            <p class="question" id="question">Loading...</p>
+            <div class="options" id="options"></div>
+            <p class="result" id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+        { 
+                question: "You only have €50 left for the week—how do you spend it?", 
+                options: ["Buy groceries and cook at home", "Eat out but spend carefully", "Save it for emergency use"],
+                response: "Smart budgeting is key to surviving abroad!"
+            },
+            { 
+                question: "Your tuition fee just increased—what will you cut from your budget?", 
+                options: ["Reduce entertainment expenses", "Work extra hours", "Seek financial aid"],
+                response: "Financial planning helps in managing unexpected costs."
+            },
+            {
+                question: "You lost a shift at work this week—how will you adjust?",
+                options: ["Find another shift", "Cut down on expenses", "Borrow from a friend"],
+                response: "Adjusting spending and seeking new income sources is a good approach!"
+            },
+            {
+                question: "An unexpected medical expense arises—how do you handle it?",
+                options: ["Use emergency savings", "Delay other payments", "Ask for financial help"],
+                response: "Having an emergency fund is crucial for such situations."
+            },
+            {
+                question: "Your friends invite you on a trip, but it costs €100—do you go?",
+                options: ["Sacrifice other expenses", "Politely decline", "Find a cheaper alternative"],
+                response: "Balancing social life and budgeting is key to stress-free student life."
+            },
+            {
+                question: "You have an important exam tomorrow, but your boss asks you to work overtime—what do you do?",
+                options: ["Prioritize studies", "Negotiate work hours", "Take the extra shift"],
+                response: "Time management plays a crucial role in academic success."
+            },
+            {
+                question: "You are struggling with the local language in class and at work—what is your next step?",
+                options: ["Seek language support", "Practice with locals", "Avoid speaking when possible"],
+                response: "Language learning is a gradual process—stay persistent!"
+            },
+            {
+                question: "You receive a lower-than-expected grade—how does this affect your motivation?",
+                options: ["Seek help and improve", "Accept the setback", "Blame external factors"],
+                response: "Growth mindset is key to academic resilience."
+            },
+            {
+                question: "You need to find affordable housing, but the options are limited—what is your plan?",
+                options: ["Compromise on location", "Find roommates", "Wait for better deals"],
+                response: "Affordable housing requires careful planning and flexibility."
+            },
+            {
+                question: "Your work contract was unexpectedly terminated—what are your next steps?",
+                options: ["Look for new job opportunities", "Use savings", "Take a break and recover"],
+                response: "Unexpected setbacks require a strong backup plan."
+            },
+            {
+                question: "You experience discrimination at work or university—how do you respond?",
+                options: ["Report the incident", "Seek peer support", "Ignore and move on"],
+                response: "Standing up for yourself is important in overcoming discrimination."
+            },
+            {
+                question: "You want to build a social network but find it hard to make friends—what do you do?",
+                options: ["Join clubs/events", "Stay in your comfort zone", "Find online communities"],
+                response: "Socializing can be challenging, but stepping out helps in adaptation."
+            },
+            {
+                question: "You are feeling burned out from managing work, studies, and personal life—how do you recover?",
+                options: ["Prioritize self-care", "Push through and keep going", "Seek mental health support"],
+                response: "Self-care and balance are essential to prevent burnout."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let finalResponses = [];
+
+        function loadQuestion() {
+            document.getElementById("progress").innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            const questionData = questions[currentQuestionIndex];
+            document.getElementById("question").innerText = questionData.question;
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+            questionData.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.onclick = () => showResult(questionData.response, option);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function showResult(response, choice) {
+            document.getElementById("result").innerText = response;
+            finalResponses.push({ question: questions[currentQuestionIndex].question, choice: choice });
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    document.getElementById("result").innerText = "";
+                    loadQuestion();
+                } else {
+                    showFinalResults();
+                }
+            }, 2000);
+        }
+
+        function showFinalResults() {
+            let tableContent = `<table><tr><th>Question</th><th>Your Choice</th></tr>`;
+            finalResponses.forEach(response => {
+                tableContent += `<tr><td>${response.question}</td><td>${response.choice}</td></tr>`;
+            });
+            tableContent += `</table>`;
+            document.getElementById("game").innerHTML = `<h3>Game Over! Thanks for playing.</h3><p>Your Choices:</p><div class='final-results'>${tableContent}</div><button class='share-btn' onclick='shareResults()'>Share Your Results</button>`;
+        }
+
+        function shareResults() {
+            let resultsText = "Question\tYour Choice\n";
+            finalResponses.forEach(response => {
+                resultsText += `${response.question}\t${response.choice}\n`;
+            });
+            navigator.clipboard.writeText(resultsText).then(() => {
+                alert("Results copied as a table format! You can share them anywhere.");
+            }).catch(err => {
+                console.error("Error copying results: ", err);
+                alert("Could not copy results. Please copy manually.");
+            });
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
